@@ -1,0 +1,20 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "6.42.0"
+    }
+  }
+
+  backend "s3" {
+    bucket = "roboshop-terraform-07"
+    key = "roboshop-eks-vpc-jenkins"
+    region = "us-east-1"
+    use_lockfile = true
+    encrypt = true
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+}
