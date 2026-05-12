@@ -1,0 +1,80 @@
+  pipeline {
+    agent {
+        node {
+            label 'AGENT-1'
+        }
+    }
+
+    environment {
+        COURSE="Jenkins"
+    }
+    options {
+        // Timeout counter starts AFTER agent is allocated
+        timeout(time: 60, unit: 'MINUTES')
+        disableConcurrentBuilds()
+        ansiColor('xterm')
+    }
+
+    stages {
+        stage('Init') {
+            steps {
+                script{
+                    withAWS(region:'us-east-1',credentials:'aws-creds'){
+                        sh """
+                            cd 10-sg
+                            terraform init
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Plan') {
+            steps {
+                script{
+                    withAWS(region:'us-east-1',credentials:'aws-creds'){
+                        sh """
+                            cd 10-sg
+                            terraform plan
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script{
+                    withAWS(region:'us-east-1',credentials:'aws-creds'){
+                        sh """
+                            cd 10-sg
+                            terraform apply -auto-approve
+                        """
+                    }
+                }
+            }
+        }
+
+                     
+    }
+
+    // These are post-Build sections
+    post {
+        always {
+            echo 'I will always say Hello again!'
+            cleanWs()
+        }
+
+        success {
+            echo 'I will run if succeeded'
+        }
+
+        failure {
+            echo 'I will run if fails'
+        }
+
+        aborted {
+            echo 'pipeline is aborted'
+        }
+    }
+}
