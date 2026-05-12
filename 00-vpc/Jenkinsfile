@@ -17,9 +17,11 @@
         stage('Init') {
             steps {
                 script{
-                    sh """
-                        terraform init
-                    """
+                    withAWS(region:'us-east-1',credentials:'aws-creds'){
+                        sh """
+                            terraform init
+                        """
+                    }
                 }
             }
         }
@@ -27,9 +29,11 @@
         stage('Plan') {
             steps {
                 script{
-                    sh """
-                        terraform plan
-                    """
+                    withAWS(region:'us-east-1',credentials:'aws-creds'){
+                        sh """
+                            terraform plan
+                        """
+                    }
                 }
             }
         }
@@ -37,9 +41,11 @@
         stage('Deploy') {
             steps {
                 script{
-                    sh """
-                        terraform apply -auto-approve
-                    """
+                    withAWS(region:'us-east-1',credentials:'aws-creds'){
+                        sh """
+                            terraform apply -auto-approve
+                        """
+                    }
                 }
             }
         }       
