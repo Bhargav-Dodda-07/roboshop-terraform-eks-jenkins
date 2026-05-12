@@ -14,6 +14,7 @@
         disableConcurrentBuilds()
         ansiColor('xterm')
     }
+
     stages {
         stage('Init') {
             steps {
@@ -52,7 +53,18 @@
                     }
                 }
             }
-        }       
+        }
+
+        stage('Trigger SG') {
+            steps {
+                script{
+                    build job: '10-sg',
+                    wait: false, // Wait for completion
+                    propagate: false // Propagate status
+                }
+            }
+        }
+              
     }
 
     // These are post-Build sections
