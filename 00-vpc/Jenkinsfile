@@ -12,6 +12,7 @@
         // Timeout counter starts AFTER agent is allocated
         timeout(time: 60, unit: 'MINUTES')
         disableConcurrentBuilds()
+        ansiColor('xterm')
     }
     stages {
         stage('Init') {
@@ -19,6 +20,7 @@
                 script{
                     withAWS(region:'us-east-1',credentials:'aws-creds'){
                         sh """
+                            cd 00-vpc
                             terraform init
                         """
                     }
@@ -31,6 +33,7 @@
                 script{
                     withAWS(region:'us-east-1',credentials:'aws-creds'){
                         sh """
+                            cd 00-vpc
                             terraform plan
                         """
                     }
@@ -43,6 +46,7 @@
                 script{
                     withAWS(region:'us-east-1',credentials:'aws-creds'){
                         sh """
+                            cd 00-vpc
                             terraform apply -auto-approve
                         """
                     }
